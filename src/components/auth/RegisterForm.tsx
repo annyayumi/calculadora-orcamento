@@ -23,6 +23,8 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Info, Sprout } from 'lucide-react';
+import { FieldError } from '../shared/FieldError';
+import { PasswordInput } from '../shared/PasswordInput';
 
 export function RegisterForm() {
     const router = useRouter();
@@ -136,11 +138,7 @@ export function RegisterForm() {
                             placeholder="Exemplo Distribuidora Ltda"
                             {...register('companyName')}
                         />
-                        {errors.companyName && (
-                            <p className="text-sm text-destructive">
-                                {errors.companyName.message}
-                            </p>
-                        )}
+                        <FieldError message={errors.companyName?.message} />
                     </div>
 
                     <div className="space-y-2">
@@ -166,11 +164,7 @@ export function RegisterForm() {
                                 e.target.value = formatted;
                             }}
                         />
-                        {errors.cnpj && (
-                            <p className="text-sm text-destructive">
-                                {errors.cnpj.message}
-                            </p>
-                        )}
+                        <FieldError message={errors.cnpj?.message} />
                     </div>
 
                     <div className="space-y-2">
@@ -212,11 +206,7 @@ export function RegisterForm() {
                                 )
                             }
                         />
-                        {errors.slug && (
-                            <p className="text-sm text-destructive">
-                                {errors.slug.message}
-                            </p>
-                        )}
+                        <FieldError message={errors.slug?.message} />
                     </div>
 
                     <div className="space-y-2">
@@ -318,12 +308,7 @@ export function RegisterForm() {
                             className="hidden"
                             onChange={handleLogoChange}
                         />
-
-                        {logoError && (
-                            <p className="text-sm text-destructive">
-                                {logoError}
-                            </p>
-                        )}
+                        <FieldError message={logoError ?? undefined} />
                     </div>
 
                     <hr className="my-8" />
@@ -335,11 +320,7 @@ export function RegisterForm() {
                             placeholder="Seu nome completo"
                             {...register('name')}
                         />
-                        {errors.name && (
-                            <p className="text-sm text-destructive">
-                                {errors.name.message}
-                            </p>
-                        )}
+                        <FieldError message={errors.name?.message} />
                     </div>
 
                     <div className="space-y-2">
@@ -350,48 +331,31 @@ export function RegisterForm() {
                             placeholder="exemplo@empresa.com.br"
                             {...register('email')}
                         />
-                        {errors.email && (
-                            <p className="text-sm text-destructive">
-                                {errors.email.message}
-                            </p>
-                        )}
+                        <FieldError message={errors.email?.message} />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="password">Senha:</Label>
-                        <Input
-                            id="password"
-                            type="password"
+                        <PasswordInput
                             placeholder="Mínimo 8 caracteres"
                             {...register('password')}
                         />
-                        {errors.password && (
-                            <p className="text-sm text-destructive">
-                                {errors.password.message}
-                            </p>
-                        )}
+                        <FieldError message={errors.password?.message} />
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="confirmPassword">
                             Confirmar senha:
                         </Label>
-                        <Input
-                            id="confirmPassword"
-                            type="password"
-                            placeholder="Repita a senha"
+                        <PasswordInput
+                            placeholder="Mínimo 8 caracteres"
                             {...register('confirmPassword')}
                         />
-                        {errors.confirmPassword && (
-                            <p className="text-sm text-destructive">
-                                {errors.confirmPassword.message}
-                            </p>
-                        )}
+
+                        <FieldError message={errors.confirmPassword?.message} />
                     </div>
 
-                    {error && (
-                        <p className="text-sm text-destructive">{error}</p>
-                    )}
+                    <FieldError message={error ?? undefined} />
 
                     <Button
                         type="submit"
