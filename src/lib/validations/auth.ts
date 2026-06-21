@@ -44,6 +44,7 @@ export const registerSchema = z
                 /^[a-z0-9-]+$/,
                 'Use apenas letras minúsculas, números e hífens'
             ),
+        logoUrl: z.string().url().optional(),
         name: z.string().min(2, 'Seu nome deve ter ao menos 2 caracteres'),
         email: z.string().email('E-mail inválido'),
         password: z.string().min(8, 'Senha deve ter ao menos 8 caracteres'),

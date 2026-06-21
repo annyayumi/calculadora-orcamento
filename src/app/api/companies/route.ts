@@ -15,7 +15,8 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const { companyName, cnpj, slug, name, email, password } = parsed.data;
+        const { companyName, cnpj, slug, name, email, password, logoUrl } =
+            parsed.data;
 
         const cnpjClean = cnpj.replace(/[^\d]/g, '');
 
@@ -52,6 +53,7 @@ export async function POST(req: NextRequest) {
                 name: companyName,
                 cnpj: cnpjClean,
                 slug,
+                logoUrl: logoUrl ?? null,
                 users: {
                     create: {
                         name,

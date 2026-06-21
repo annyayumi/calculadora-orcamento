@@ -20,6 +20,7 @@ model Company {
   name      String
   cnpj      String   @unique
   slug      String   @unique
+  logoUrl   String?
   users     User[]
   createdAt DateTime @default(now())
 }

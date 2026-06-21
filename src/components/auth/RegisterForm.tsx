@@ -3,7 +3,8 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { registerSchema, type RegisterFormData } from '@/lib/validations/auth';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -27,6 +28,10 @@ export function RegisterForm() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [logoFile, setLogoFile] = useState<File | null>(null);
+    const [logoPreview, setLogoPreview] = useState<string | null>(null);
+    const [logoError, setLogoError] = useState<string | null>(null);
+    const logoInputRef = useRef<HTMLInputElement>(null);
 
     const {
         register,
@@ -37,15 +42,57 @@ export function RegisterForm() {
         resolver: zodResolver(registerSchema),
     });
 
+    function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/svg+xml'];
+        if (!allowedTypes.includes(file.type)) {
+            setLogoError('Formato inválido. Use PNG, JPG ou SVG.');
+            return;
+        }
+        if (file.size > 2 * 1024 * 1024) {
+            setLogoError('Arquivo muito grande. O limite é 2MB.');
+            return;
+        }
+
+        setLogoError(null);
+        setLogoFile(file);
+        setLogoPreview(URL.createObjectURL(file));
+    }
+
     async function onSubmit(data: RegisterFormData) {
         setIsLoading(true);
         setError(null);
 
         try {
+            let logoUrl: string | undefined;
+
+            if (logoFile) {
+                const formData = new FormData();
+                formData.append('file', logoFile);
+                formData.append('slug', data.slug);
+
+                const uploadRes = await fetch('/api/upload/logo', {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                const uploadData = await uploadRes.json();
+
+                if (!uploadRes.ok) {
+                    setError(
+                        uploadData.error ?? 'Erro ao fazer upload da logo.'
+                    );
+                    return;
+                }
+
+                logoUrl = uploadData.url;
+            }
             const response = await fetch('/api/companies', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify({ ...data, logoUrl }),
             });
 
             const result = await response.json();
@@ -131,7 +178,7 @@ export function RegisterForm() {
                             htmlFor="slug"
                             className="inline-flex items-center gap-1 leading-none"
                         >
-                            Identificador único:
+                            Identificador único
                         </Label>
                         <TooltipProvider>
                             <Tooltip>
@@ -171,6 +218,115 @@ export function RegisterForm() {
                             </p>
                         )}
                     </div>
+
+                    <div className="space-y-2">
+                        <Label>
+                            Logotipo da empresa{' '}
+                            <span className="text-xs font-normal text-muted-foreground">
+                                (opcional)
+                            </span>
+                        </Label>
+
+                        <div
+                            onClick={() => logoInputRef.current?.click()}
+                            className="flex items-center gap-3 w-full border border-dashed rounded-lg p-3 cursor-pointer hover:bg-muted/50 transition-colors"
+                        >
+                            {logoPreview ? (
+                                <div className="relative w-12 h-12 rounded-md overflow-hidden border bg-muted shrink-0">
+                                    <Image
+                                        src={logoPreview}
+                                        alt="Preview da logo"
+                                        fill
+                                        className="object-contain p-1"
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-12 h-12 rounded-md border bg-muted flex items-center justify-center shrink-0">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="text-muted-foreground"
+                                    >
+                                        <rect
+                                            width="18"
+                                            height="18"
+                                            x="3"
+                                            y="3"
+                                            rx="2"
+                                            ry="2"
+                                        />
+                                        <circle cx="9" cy="9" r="2" />
+                                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                    </svg>
+                                </div>
+                            )}
+
+                            <div className="flex flex-col min-w-0">
+                                <span className="text-sm font-medium">
+                                    {logoPreview
+                                        ? logoFile?.name
+                                        : 'Clique para selecionar'}
+                                </span>
+                                <span className="text-xs text-muted-foreground truncate">
+                                    {logoPreview
+                                        ? 'Clique para trocar a imagem'
+                                        : 'PNG, JPG ou SVG · máx. 2MB'}
+                                </span>
+                            </div>
+
+                            {logoPreview && (
+                                <button
+                                    type="button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setLogoFile(null);
+                                        setLogoPreview(null);
+                                        if (logoInputRef.current)
+                                            logoInputRef.current.value = '';
+                                    }}
+                                    className="ml-auto text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                                    aria-label="Remover logo"
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path d="M18 6 6 18M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            )}
+                        </div>
+
+                        <input
+                            ref={logoInputRef}
+                            type="file"
+                            accept="image/png,image/jpeg,image/svg+xml"
+                            className="hidden"
+                            onChange={handleLogoChange}
+                        />
+
+                        {logoError && (
+                            <p className="text-sm text-destructive">
+                                {logoError}
+                            </p>
+                        )}
+                    </div>
+
+                    <hr className="my-8" />
 
                     <div className="space-y-2">
                         <Label htmlFor="name">Nome Completo:</Label>
