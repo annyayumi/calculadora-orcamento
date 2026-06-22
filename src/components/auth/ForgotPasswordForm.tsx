@@ -1,3 +1,6 @@
+// src/components/auth/ForgotPasswordForm.tsx
+// Formulário para solicitar redefinição de senha
+
 'use client';
 
 import { useState } from 'react';

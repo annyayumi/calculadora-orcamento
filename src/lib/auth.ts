@@ -1,3 +1,6 @@
+// src/lib/auth.ts
+// Configuração do NextAuth para autenticação de usuários
+
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { prisma } from '@/lib/prisma';

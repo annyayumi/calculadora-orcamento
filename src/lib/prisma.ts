@@ -1,3 +1,6 @@
+// src/lib/prisma.ts
+// Configuração do Prisma Client com o adaptador Neon para conexão com o banco de dados
+
 import { PrismaClient } from '../generated/prisma';
 import { PrismaNeon } from '@prisma/adapter-neon';
 

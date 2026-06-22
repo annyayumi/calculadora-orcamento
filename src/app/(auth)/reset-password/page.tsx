@@ -1,3 +1,6 @@
+// src/app/(auth)/reset-password/page.tsx
+// Página de redefinição de senha
+
 import { Suspense } from 'react';
 import { ResetPasswordForm } from '@/components/auth/ResetPasswordForm';
 

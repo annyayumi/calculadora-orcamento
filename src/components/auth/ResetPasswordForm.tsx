@@ -1,3 +1,6 @@
+// src/components/auth/ResetPasswordForm.tsx
+// Formulário para redefinir a senha do usuário
+
 'use client';
 
 import { useState } from 'react';

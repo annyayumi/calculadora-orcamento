@@ -1,3 +1,6 @@
+// src/app/api/auth/forgot-password/route.ts
+// Endpoint para solicitar redefinição de senha. Gera um token e envia um e-mail com o link de redefinição.
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { sendPasswordResetEmail } from '@/lib/email';

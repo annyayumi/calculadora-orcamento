@@ -1,3 +1,6 @@
+// src/components/auth/RegisterForm.tsx
+// Formulário de registro para criação de conta de empresa
+
 'use client';
 
 import { useForm } from 'react-hook-form';

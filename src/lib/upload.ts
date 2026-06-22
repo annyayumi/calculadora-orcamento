@@ -1,3 +1,6 @@
+// src/lib/upload.ts
+// Este arquivo contém funções para validar, fazer upload e deletar arquivos de logo usando o Vercel Blob Storage.
+
 import { put, del } from '@vercel/blob';
 
 const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/svg+xml'];

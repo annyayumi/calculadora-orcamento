@@ -1,3 +1,6 @@
+// src/app/api/auth/reset-password/route.ts
+// Endpoint para redefinir a senha do usuário usando um token de redefinição de senha
+
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
