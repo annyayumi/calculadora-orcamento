@@ -45,6 +45,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                     role: user.role,
                     companyId: user.companyId,
                     code: user.code,
+                    companyLogo: user.company.logoUrl ?? null,
                 };
             },
         }),
@@ -56,6 +57,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 token.role = (user as { role?: string }).role;
                 token.companyId = (user as { companyId?: string }).companyId;
                 token.code = (user as { code?: string }).code;
+                token.companyLogo = (
+                    user as { companyLogo?: string | null }
+                ).companyLogo;
             }
             return token;
         },
@@ -65,6 +69,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
                 session.user.role = token.role as string;
                 session.user.companyId = token.companyId as string;
                 session.user.code = token.code as string;
+                session.user.companyLogo = token.companyLogo as string | null;
             }
             return session;
         },

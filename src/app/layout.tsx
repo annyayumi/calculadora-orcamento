@@ -1,5 +1,10 @@
+// src/app/layout.tsx
+// Layout raiz do aplicativo, definindo a estrutura HTML e provendo o contexto de sessão para toda a aplicação
+
 import type { Metadata } from 'next';
 import { Fraunces, Inter } from 'next/font/google';
+import { SessionProvider } from 'next-auth/react';
+import { ThemeProvider } from 'next-themes';
 import './globals.css';
 
 const fraunces = Fraunces({
@@ -29,9 +34,18 @@ export default function RootLayout({
         <html
             lang="pt-BR"
             className={`${fraunces.variable} ${inter.variable} h-full`}
+            suppressHydrationWarning
         >
             <body className="min-h-full flex flex-col antialiased">
-                {children}
+                <SessionProvider>
+                    <ThemeProvider
+                        attribute="class"
+                        defaultTheme="system"
+                        enableSystem
+                    >
+                        {children}
+                    </ThemeProvider>
+                </SessionProvider>
             </body>
         </html>
     );
